@@ -1,0 +1,261 @@
+/* Speech Cards — layout is a fixed column: dots / swipeable pages / Yes-No bar.
+   Nothing scrolls except sideways between pages. */
+
+:root {
+  --bg:        #faf8f4;
+  --ink:       #16181c;
+  --ink-soft:  #4a4f57;
+  --dot:       #c9c4bb;
+  --dot-on:    #16181c;
+
+  /* category card colours: soft pastel, near-black text, 7:1+ contrast */
+  --needs-bg:    #bfd9f2;  --needs-line:    #5d87b3;
+  --health-bg:   #f7c9d6;  --health-line:   #b87189;
+  --comfort-bg:  #fadcb4;  --comfort-line:  #bd8f4d;
+  --people-bg:   #ddd0f0;  --people-line:   #8a76b3;
+  --activity-bg: #c6e5bd;  --activity-line: #6d9b60;
+  --feelings-bg: #f6ecab;  --feelings-line: #ab9a43;
+  --misc-bg:     #bfe6e0;  --misc-line:     #5d9b93;
+
+  --yes-bg:  #b9e3b0;  --yes-line:  #5c9a4e;
+  --no-bg:   #f4bfbf;  --no-line:   #b56464;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  height: 100%;
+  overflow: hidden;
+  overscroll-behavior: none;
+}
+
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  height: 100dvh;
+  padding: env(safe-area-inset-top) env(safe-area-inset-right)
+           env(safe-area-inset-bottom) env(safe-area-inset-left);
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+button {
+  font: inherit;
+  color: inherit;
+  border: none;
+  background: none;
+  touch-action: manipulation;
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* ---------- page dots ---------- */
+
+.dots {
+  flex: 0 0 auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  height: 38px;
+}
+
+.dot {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--dot);
+  transition: transform .18s ease, background-color .18s ease;
+}
+
+.dot.on {
+  background: var(--dot-on);
+  transform: scale(1.35);
+}
+
+/* ---------- swipeable pages ---------- */
+
+.pages {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-snap-type: x mandatory;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+
+.pages::-webkit-scrollbar { display: none; }
+
+.page {
+  flex: 0 0 100%;
+  width: 100%;
+  height: 100%;
+  scroll-snap-align: center;
+  scroll-snap-stop: always;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  gap: 10px;
+  padding: 4px 10px 10px;
+}
+
+/* ---------- a card ---------- */
+
+.card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  min-height: 0;
+  min-width: 0;
+  overflow: hidden;
+  padding: 8px 6px;
+  border-radius: 20px;
+  border: 3px solid var(--line);
+  background: var(--bg-card);
+  text-align: center;
+  transition: transform .12s ease;
+}
+
+.card:active { transform: scale(.96); }
+
+.card-icon {
+  font-size: clamp(64px, 11vh, 120px);
+  line-height: 1;
+}
+
+.card-en {
+  font-size: clamp(26px, 6.4vw, 38px);
+  font-weight: 800;
+  line-height: 1.1;
+  overflow-wrap: anywhere;
+}
+
+.card-ta {
+  font-size: clamp(20px, 5vw, 28px);
+  font-weight: 500;
+  line-height: 1.25;
+  color: var(--ink-soft);
+  overflow-wrap: anywhere;
+}
+
+/* category colours — also encoded by page order, never colour alone */
+[data-category="needs"]    { --bg-card: var(--needs-bg);    --line: var(--needs-line); }
+[data-category="health"]   { --bg-card: var(--health-bg);   --line: var(--health-line); }
+[data-category="comfort"]  { --bg-card: var(--comfort-bg);  --line: var(--comfort-line); }
+[data-category="people"]   { --bg-card: var(--people-bg);   --line: var(--people-line); }
+[data-category="activity"] { --bg-card: var(--activity-bg); --line: var(--activity-line); }
+[data-category="feelings"] { --bg-card: var(--feelings-bg); --line: var(--feelings-line); }
+[data-category="misc"]     { --bg-card: var(--misc-bg);     --line: var(--misc-line); }
+
+/* ---------- Yes / No bar ---------- */
+
+.yesno {
+  flex: 0 0 auto;
+  height: 18vh;
+  height: 18dvh;
+  min-height: 110px;
+  max-height: 150px;
+  display: flex;
+  gap: 10px;
+  padding: 0 10px 10px;
+}
+
+.yn {
+  flex: 1 1 0;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  border-radius: 20px;
+  border: 3px solid var(--line);
+  background: var(--bg-card);
+  transition: transform .12s ease, filter .12s ease;
+}
+
+.yn-yes { --bg-card: var(--yes-bg); --line: var(--yes-line); }
+.yn-no  { --bg-card: var(--no-bg);  --line: var(--no-line); }
+
+.yn:active,
+.yn.flash { transform: scale(.96); filter: brightness(1.12); }
+
+.yn-icon { font-size: clamp(34px, 9vw, 48px); line-height: 1; }
+.yn-text { display: flex; flex-direction: column; align-items: flex-start; line-height: 1.1; }
+.yn-en   { font-size: clamp(28px, 7.5vw, 40px); font-weight: 800; }
+.yn-ta   { font-size: clamp(18px, 4.6vw, 24px); font-weight: 500; color: var(--ink-soft); }
+
+/* ---------- enlarged card overlay ---------- */
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  background: var(--bg-card, var(--bg));
+  padding: env(safe-area-inset-top) env(safe-area-inset-right)
+           env(safe-area-inset-bottom) env(safe-area-inset-left);
+  animation: pop .2s ease;
+}
+
+.overlay[hidden] { display: none; }
+
+@keyframes pop {
+  from { opacity: 0; transform: scale(.88); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+.big-card {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px;
+  text-align: center;
+}
+
+.big-icon { font-size: min(45vw, 32vh); line-height: 1; }
+.big-en   { font-size: clamp(48px, 13vw, 84px); font-weight: 800; line-height: 1.1; overflow-wrap: anywhere; }
+.big-ta   { font-size: clamp(32px, 8vw, 52px); font-weight: 500; line-height: 1.2; color: var(--ink-soft); overflow-wrap: anywhere; }
+
+.close {
+  flex: 0 0 auto;
+  height: 110px;
+  margin: 0 12px 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  border-radius: 20px;
+  border: 3px solid var(--line, var(--ink));
+  background: rgba(255, 255, 255, .72);
+}
+
+.close:active { transform: scale(.97); }
+.close-x    { font-size: 40px; line-height: 1; }
+.close-word { font-size: 34px; font-weight: 800; }
+
+/* ---------- reduced motion ---------- */
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: .001ms !important;
+    transition-duration: .001ms !important;
+  }
+}

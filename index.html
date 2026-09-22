@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Speech Cards</title>
+<meta name="description" content="Simple communication cards.">
+<meta name="theme-color" content="#faf8f4">
+<meta name="mobile-web-app-capable" content="yes">
+<link rel="manifest" href="./manifest.webmanifest">
+<link rel="icon" href="./icons/icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="./icons/icon-192.png">
+<link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+
+  <nav id="dots" class="dots" aria-label="Page"></nav>
+
+  <main id="pages" class="pages" aria-label="Cards"></main>
+
+  <div class="yesno">
+    <button type="button" class="yn yn-yes" id="btn-yes">
+      <span class="yn-icon">✅</span>
+      <span class="yn-text"><span class="yn-en">Yes</span><span class="yn-ta">ஆமாம்</span></span>
+    </button>
+    <button type="button" class="yn yn-no" id="btn-no">
+      <span class="yn-icon">❌</span>
+      <span class="yn-text"><span class="yn-en">No</span><span class="yn-ta">இல்லை</span></span>
+    </button>
+  </div>
+
+  <div id="overlay" class="overlay" hidden>
+    <button type="button" class="big-card" id="big-card" aria-live="polite">
+      <span class="big-icon" id="big-icon"></span>
+      <span class="big-en" id="big-en"></span>
+      <span class="big-ta" id="big-ta"></span>
+    </button>
+    <button type="button" class="close" id="btn-close" aria-label="Close">
+      <span class="close-x">✕</span>
+      <span class="close-word">Back</span>
+    </button>
+  </div>
+
+  <script src="./cards.js"></script>
+  <script src="./app.js"></script>
+</body>
+</html>
