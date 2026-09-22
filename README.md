@@ -25,7 +25,8 @@ After this the phone can be in airplane mode and the app still works.
 
 ## How she uses it
 
-- **Swipe left / right** — move between the 6 pages of cards.
+- **Swipe left / right** — move between the 6 pages of cards. It loops: swiping
+  back from the first page goes to the last, and forward from the last returns to the first.
 - **Tap a card** — it fills the screen and the phone says the word.
   Tap the big card again to repeat it.
 - **Back** (the big button, or the phone's back button) — return to the cards.
@@ -51,8 +52,9 @@ Each card looks like this:
 | `speak` | Optional. What the phone says out loud. Leave it out and it says `en`. |
 
 **Rules**
-- A page holds **1 to 4 cards**. Four gives the usual 2 × 2 grid; with fewer, the
-  cards grow to fill the page, so you never have to pad a page out.
+- A page holds **1 to 6 cards**. Four gives the usual 2 × 2 grid; with fewer, the
+  cards grow to fill the page. Five or six switch to three rows — the words stay the
+  same size, the emoji gets smaller to make room.
 - `category` sets the page colour. Use one of:
   `needs` `health` `comfort` `people` `activity` `feelings` `misc`.
 - Keep English labels short. Two words fit comfortably; three start to wrap.
@@ -65,7 +67,7 @@ Find the page you want in `cards.js` and add a line to its `cards` list:
 { icon: "📞", en: "Call Sangeeth", ta: "சங்கீத்தை கூப்பிடு", speak: "Please call Sangeeth" },
 ```
 
-If that page already has 4 cards, either take one out or start a new page:
+If that page already has 6 cards, either take one out or start a new page:
 
 ```js
 {

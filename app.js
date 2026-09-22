@@ -95,13 +95,13 @@
 
   data.pages.forEach(function (page, i) {
     var count = page.cards ? page.cards.length : 0;
-    if (count < 1 || count > 4) {
+    if (count < 1 || count > 6) {
       console.warn("Page " + (i + 1) + " (" + page.category + ") has " + count +
-                   " cards; a page holds 1 to 4.");
+                   " cards; a page holds 1 to 6.");
     }
     var pageEl = document.createElement("section");
     pageEl.className = "page";
-    pageEl.setAttribute("data-count", String(Math.min(Math.max(count, 1), 4)));
+    pageEl.setAttribute("data-count", String(Math.min(Math.max(count, 1), 6)));
     (page.cards || []).forEach(function (card) {
       pageEl.appendChild(makeCard(card, page.category));
     });
@@ -132,6 +132,45 @@
   pagesEl.addEventListener("scroll", function () {
     settlingUntil = Date.now() + 180;   // a tap during a scroll is not a tap
     syncDots();
+  }, { passive: true });
+
+  /* ---------- swiping past either end wraps around ---------- */
+
+  // Decided on touchend rather than mid-gesture: jumping while the finger is still
+  // down leaves the browser panning from the new position and overshooting a page.
+
+  var lastPage = data.pages.length - 1;
+  var wrapFromX = 0, wrapFromScroll = 0, wrapArmed = false;
+  var WRAP_MIN_DRAG = 50;
+
+  function goToPage(i) {
+    pagesEl.scrollLeft = i * pagesEl.clientWidth;
+    settlingUntil = Date.now() + 180;
+    syncDots();
+  }
+
+  function maxScroll() { return pagesEl.scrollWidth - pagesEl.clientWidth; }
+
+  pagesEl.addEventListener("touchstart", function (e) {
+    wrapArmed = e.touches.length === 1;
+    if (!wrapArmed) { return; }
+    wrapFromX = e.touches[0].clientX;
+    wrapFromScroll = pagesEl.scrollLeft;
+  }, { passive: true });
+
+  pagesEl.addEventListener("touchend", function (e) {
+    if (!wrapArmed) { return; }
+    wrapArmed = false;
+    var t = e.changedTouches && e.changedTouches[0];
+    if (!t) { return; }
+    var dx = t.clientX - wrapFromX;
+    var max = maxScroll();
+    // only wrap if the swipe both started and ended pinned against the same edge
+    if (wrapFromScroll <= 1 && pagesEl.scrollLeft <= 1 && dx > WRAP_MIN_DRAG) {
+      goToPage(lastPage);
+    } else if (wrapFromScroll >= max - 1 && pagesEl.scrollLeft >= max - 1 && dx < -WRAP_MIN_DRAG) {
+      goToPage(0);
+    }
   }, { passive: true });
 
   /* ---------- tap a card (but never mistake a swipe for a tap) ---------- */

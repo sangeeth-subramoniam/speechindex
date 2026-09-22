@@ -60,16 +60,20 @@ a caregiver can understand instantly.
 ## 6. Functional requirements
 
 ### 6.1 Card grid (P0)
-- A page holds **1 to 4 cards** filling the viewport (minus the top page-dots and the bottom
+- A page holds **1 to 6 cards** filling the viewport (minus the top page-dots and the bottom
   Yes/No bar). Four cards is the 2 × 2 grid; with three the last card spans both columns; with
-  two they stack full-width; one fills the page. No vertical scrolling anywhere, on a 360 × 640
-  CSS-px screen.
+  two they stack full-width; one fills the page. Five and six go to a 2 × 3 grid — English and
+  Tamil keep their minimum sizes and the emoji shrinks (45px at 360 × 640) to make room. No
+  vertical scrolling anywhere, on a 360 × 640 CSS-px screen.
 - Card content: emoji icon (top, huge), English label (large, bold), Tamil label (below, smaller, lighter weight).
 - Cards have a soft category colour background (see §7) and a dark, high-contrast border/text.
 - Cards are defined in `cards.js` (see §8). Order in the file = order on screen.
 
 ### 6.2 Swipe between pages (P0)
 - Native horizontal scroll with `scroll-snap-type: x mandatory`, one page per snap. No JS swipe library.
+- **Wraps around**: a backwards swipe on the first page goes to the last, and a forwards swipe on
+  the last returns to the first. Decided on `touchend`, not mid-gesture, so the browser is not left
+  panning from the new position and overshooting.
 - Page indicator dots at the top, current page highlighted. Dots are large (≥ 16 px) but not tappable-critical.
 - Body/document must not scroll vertically or bounce; `overscroll-behavior: none`.
 
@@ -113,7 +117,7 @@ a caregiver can understand instantly.
   travel < 10 px) so a swipe never accidentally opens a card.
 - Use the full safe area (`env(safe-area-inset-*)`).
 
-## 7. Content — v1 card set (21 cards over 6 pages)
+## 7. Content — card set (23 cards over 6 pages)
 
 English primary, Tamil help text. Colour = category. **Tamil strings still need Sangeeth's review** —
 they are drafted for colloquial spoken Tamil.
@@ -126,10 +130,10 @@ adapts (see §6.1).
 | Page | Category (colour) | Cards |
 |---|---|---|
 | 1 | Needs (blue) | 💧 Water · தண்ணீர் — 🍚 Food · சாப்பாடு — 🚽 Toilet · கழிவறை — 🛏️ Sleep · தூக்கம் |
-| 2 | Health (pink) | 🤕 Pain · வலி — 💊 Medicine · மருந்து — 😵 Dizzy · தலைசுற்றல் |
+| 2 | Health (pink) | 🤕 Pain · வலி — 💊 Medicine · மருந்து — 🤚 Itching · அரிப்பு — 😵‍💫 Dizzy · தலைசுற்றல் — 😖 Headache · தலைவலி |
 | 3 | Comfort (orange) | 🥵 Hot · சூடு — 🥶 Cold · குளிர் — 🚿 Bath · குளியல் — 🪑 Sit up · எழுந்து உட்கார |
 | 4 | Activity (green) | 📺 TV · டிவி — 🎵 Music · பாட்டு — 🧘 Exercise · பயிற்சி — 🌳 Go outside · வெளியே |
-| 5 | Misc (teal) | 🍵 Tea · டீ — ☕ Coffee · காபி — 📱 Phone · போன் — 🛐 Prayer · பிரார்த்தனை |
+| 5 | Misc (teal) | 🍵 Tea · டீ — ☕ Coffee · காபி — 🔌 Charger · சார்ஜர் — 🛐 Prayer · பிரார்த்தனை |
 | 6 | Feelings (yellow) | 😊 Happy · சந்தோஷம் — 😴 Tired · சோர்வு |
 
 Fixed bar: ✅ Yes · ஆமாம் — ❌ No · இல்லை.

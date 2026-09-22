@@ -3,8 +3,8 @@
  * TO EDIT: change a line below, then bump CACHE_VERSION in sw.js, commit and push.
  * That is a release. See README.md.
  *
- * A page holds 1 to 4 cards. Four is the usual 2 x 2 grid; fewer cards simply
- * grow to fill the page, so you never have to pad a page out.
+ * A page holds 1 to 6 cards. Four is the usual 2 x 2 grid; fewer cards grow to
+ * fill the page, and 5 or 6 switch to a 2 x 3 grid with slightly smaller icons.
  * Fields:  icon = emoji   en = English label   ta = Tamil help text
  *          speak = optional; what the phone says out loud (defaults to `en`)
  * category must be one of: needs health comfort people activity feelings misc
@@ -23,9 +23,11 @@ window.CARDS = {
     {
       category: "health",
       cards: [
-        { icon: "🤕", en: "Pain",     ta: "வலி",        speak: "I have pain" },
-        { icon: "💊", en: "Medicine", ta: "மருந்து",     speak: "I need my medicine" },
-        { icon: "😵", en: "Dizzy",    ta: "தலைசுற்றல்",  speak: "I feel dizzy" }
+        { icon: "🤕", en: "Pain",     ta: "வலி",         speak: "I have pain" },
+        { icon: "💊", en: "Medicine", ta: "மருந்து",      speak: "I need my medicine" },
+        { icon: "🤚", en: "Itching",  ta: "அரிப்பு",      speak: "I have an itch" },
+        { icon: "😵‍💫", en: "Dizzy",    ta: "தலைசுற்றல்",   speak: "I feel dizzy" },
+        { icon: "😖", en: "Headache", ta: "தலைவலி",      speak: "I have a headache" }
       ]
     },
     {
@@ -51,7 +53,7 @@ window.CARDS = {
       cards: [
         { icon: "🍵", en: "Tea",    ta: "டீ",            speak: "I would like some tea" },
         { icon: "☕", en: "Coffee", ta: "காபி",          speak: "I would like some coffee" },
-        { icon: "📱", en: "Phone",  ta: "போன்",          speak: "I want my phone" },
+        { icon: "🔌", en: "Charger", ta: "சார்ஜர்",       speak: "I need my charger" },
         { icon: "🛐", en: "Prayer", ta: "பிரார்த்தனை",   speak: "I want to pray" }
       ]
     },
