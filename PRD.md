@@ -5,8 +5,8 @@ One HTML page, swipeable, big, bilingual (English + Tamil), hosted on GitHub Pag
 installed as a home-screen app on an Android phone.
 
 Author: PRD drafted with Claude Fable 5.1 on 2026-09-22. Development to be done by another model — see §11.
-**Status: ready for development.** All questions are answered; GitHub access is set up (§10).
-Start at §11 step 1. Do not ask Sangeeth to re-decide anything in §5.
+**Status: built and live** at https://sangeeth-subramoniam.github.io/speechindex/ (2026-09-22).
+See the test checklist at the end of §11 for what is verified and what still needs the phone.
 
 ---
 
@@ -235,14 +235,34 @@ speechindex/
 Local run: `python3 -m http.server 8080` in the repo, open `http://localhost:8080/`. Service workers
 need `localhost` or HTTPS — `file://` is fine for layout only.
 
-Test checklist (must all pass before telling Sangeeth it's ready):
-- [ ] 360 × 640: all 4 cards visible, nothing clipped, no vertical scroll, dots + Yes/No visible.
-- [ ] Swipe left/right snaps exactly one page; a swipe never opens a card.
-- [ ] Tap card → overlay + speech; ✕ and Android back both close it; tapping again re-speaks.
-- [ ] Yes / No speak and flash.
-- [ ] Airplane mode after first load: app opens from home screen and everything above still works.
-- [ ] Edit a label in `cards.js`, bump version, push → phone shows the change on the second launch while online.
-- [ ] Pushed from the personal account; `git log` author email is not the work address.
+Test checklist — **status as of 2026-09-22**, verified with Playwright driving real Chrome
+with touch emulation at 360 x 640 and 412 x 915, against both localhost and the live URL:
+
+- [x] 360 x 640: all 4 cards visible, nothing clipped, no vertical scroll, dots + Yes/No visible.
+- [x] Swipe left/right snaps exactly one page; a swipe never opens a card.
+- [x] Tap card -> overlay + speech; close button and browser back both close it; tapping again re-speaks.
+- [x] Yes / No speak and flash.
+- [x] Airplane mode after first load: cold start renders everything and taps still work (emulated offline,
+      on the live HTTPS URL, with the service worker scoped to /speechindex/).
+- [x] Edit a label in `cards.js`, bump version -> launch 1 keeps the old copy, launch 2 shows the change,
+      old cache deleted, new version still works offline.
+- [x] Pushed from the personal account; commit author is sangeethsubramoniam@gmail.com, no work email
+      anywhere in history.
+
+Still to confirm on the actual phone (cannot be done from this machine):
+
+- [ ] Real text-to-speech output — the tests stub `speechSynthesis` to assert the right words are
+      requested; only a real device proves a voice is installed and audible.
+- [ ] Haptic buzz on tap (`navigator.vibrate` is a no-op on desktop).
+- [ ] "Add to Home screen" and launching standalone with no address bar.
+- [ ] Genuine airplane mode, as opposed to emulated offline.
+
+**Two bugs found and fixed during implementation**, both in `sw.js` and both invisible until a second release:
+1. `cache.addAll()` precached through the browser HTTP cache, so a new release re-cached the *old*
+   `cards.js` — the version bumped but the content never changed. Now precaches with
+   `fetch(new Request(url, { cache: "reload" }))`.
+2. The fetch handler used the global `caches.match()`, which searches every cache, so during a version
+   changeover it could serve files from the previous release. Now scoped to `CACHE_VERSION`'s cache only.
 
 ## 12. Open items for Sangeeth
 
