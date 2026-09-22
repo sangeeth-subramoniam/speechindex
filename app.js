@@ -94,12 +94,14 @@
   }
 
   data.pages.forEach(function (page, i) {
-    if (!page.cards || page.cards.length !== 4) {
-      console.warn("Page " + (i + 1) + " (" + page.category + ") has " +
-                   (page.cards ? page.cards.length : 0) + " cards; expected 4.");
+    var count = page.cards ? page.cards.length : 0;
+    if (count < 1 || count > 4) {
+      console.warn("Page " + (i + 1) + " (" + page.category + ") has " + count +
+                   " cards; a page holds 1 to 4.");
     }
     var pageEl = document.createElement("section");
     pageEl.className = "page";
+    pageEl.setAttribute("data-count", String(Math.min(Math.max(count, 1), 4)));
     (page.cards || []).forEach(function (card) {
       pageEl.appendChild(makeCard(card, page.category));
     });

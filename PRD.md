@@ -60,8 +60,10 @@ a caregiver can understand instantly.
 ## 6. Functional requirements
 
 ### 6.1 Card grid (P0)
-- Each page is exactly 4 cards in a 2 × 2 grid filling the viewport (minus the top page-dots
-  and the bottom Yes/No bar). No vertical scrolling anywhere, on a 360 × 640 CSS-px screen.
+- A page holds **1 to 4 cards** filling the viewport (minus the top page-dots and the bottom
+  Yes/No bar). Four cards is the 2 × 2 grid; with three the last card spans both columns; with
+  two they stack full-width; one fills the page. No vertical scrolling anywhere, on a 360 × 640
+  CSS-px screen.
 - Card content: emoji icon (top, huge), English label (large, bold), Tamil label (below, smaller, lighter weight).
 - Cards have a soft category colour background (see §7) and a dark, high-contrast border/text.
 - Cards are defined in `cards.js` (see §8). Order in the file = order on screen.
@@ -111,25 +113,26 @@ a caregiver can understand instantly.
   travel < 10 px) so a swipe never accidentally opens a card.
 - Use the full safe area (`env(safe-area-inset-*)`).
 
-## 7. Content — v1 card set (7 pages × 4)
+## 7. Content — v1 card set (21 cards over 6 pages)
 
-English primary, Tamil help text. Colour = category. **Tamil strings must be reviewed by Sangeeth
-before release** — they're drafted for colloquial spoken Tamil and may need adjustment to how
-Amma actually says things.
+English primary, Tamil help text. Colour = category. **Tamil strings still need Sangeeth's review** —
+they are drafted for colloquial spoken Tamil.
+
+Revised 2026-09-22 on Sangeeth's instruction: removed Doctor, Call family, Come here, Leave me alone,
+Sad, Scared, Glasses, Wait and Thank you; added Exercise; split Tea / Coffee into two cards.
+That leaves 21 cards, which does not divide by 4, so a page now holds **1 to 4** cards and the grid
+adapts (see §6.1).
 
 | Page | Category (colour) | Cards |
 |---|---|---|
 | 1 | Needs (blue) | 💧 Water · தண்ணீர் — 🍚 Food · சாப்பாடு — 🚽 Toilet · கழிவறை — 🛏️ Sleep · தூக்கம் |
-| 2 | Health (pink) | 🤕 Pain · வலி — 💊 Medicine · மருந்து — 👨‍⚕️ Doctor · டாக்டர் — 😵 Dizzy · தலைசுற்றல் |
+| 2 | Health (pink) | 🤕 Pain · வலி — 💊 Medicine · மருந்து — 😵 Dizzy · தலைசுற்றல் |
 | 3 | Comfort (orange) | 🥵 Hot · சூடு — 🥶 Cold · குளிர் — 🚿 Bath · குளியல் — 🪑 Sit up · எழுந்து உட்கார |
-| 4 | People (purple) | 📞 Call family · குடும்பத்தை கூப்பிடு — 👋 Come here · இங்கே வா — 🙏 Leave me alone · தனியாக இரு — 📱 Phone · போன் |
-| 5 | Activity (green) | 📺 TV · டிவி — 🎵 Music · பாட்டு — 🌳 Go outside · வெளியே — 🛐 Prayer · பிரார்த்தனை |
-| 6 | Feelings (yellow) | 😊 Happy · சந்தோஷம் — 😢 Sad · கவலை — 😴 Tired · சோர்வு — 😨 Scared · பயம் |
-| 7 | Misc (teal) | ☕ Tea / Coffee · டீ / காபி — 👓 Glasses · கண்ணாடி — ✋ Wait · பொறு — ❤️ Thank you · நன்றி |
+| 4 | Activity (green) | 📺 TV · டிவி — 🎵 Music · பாட்டு — 🧘 Exercise · பயிற்சி — 🌳 Go outside · வெளியே |
+| 5 | Misc (teal) | 🍵 Tea · டீ — ☕ Coffee · காபி — 📱 Phone · போன் — 🛐 Prayer · பிரார்த்தனை |
+| 6 | Feelings (yellow) | 😊 Happy · சந்தோஷம் — 😴 Tired · சோர்வு |
 
 Fixed bar: ✅ Yes · ஆமாம் — ❌ No · இல்லை.
-
-Later, if wanted: rename "Call family" to named cards (e.g. "Call Sangeeth") by editing `cards.js`.
 
 ## 8. Data format — `cards.js`
 

@@ -110,6 +110,12 @@ button {
   padding: 4px 10px 10px;
 }
 
+/* A page holds up to 4 cards. With fewer, the cards grow to fill the page
+   rather than leaving empty squares. */
+.page[data-count="3"] .card:last-child { grid-column: span 2; }
+.page[data-count="2"] { grid-template-columns: 1fr; }
+.page[data-count="1"] { grid-template-columns: 1fr; grid-template-rows: 1fr; }
+
 /* ---------- a card ---------- */
 
 .card {

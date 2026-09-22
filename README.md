@@ -25,7 +25,7 @@ After this the phone can be in airplane mode and the app still works.
 
 ## How she uses it
 
-- **Swipe left / right** — move between the 7 pages of cards.
+- **Swipe left / right** — move between the 6 pages of cards.
 - **Tap a card** — it fills the screen and the phone says the word.
   Tap the big card again to repeat it.
 - **Back** (the big button, or the phone's back button) — return to the cards.
@@ -51,23 +51,29 @@ Each card looks like this:
 | `speak` | Optional. What the phone says out loud. Leave it out and it says `en`. |
 
 **Rules**
-- Keep **exactly 4 cards per page** — the screen is a 2 × 2 grid.
+- A page holds **1 to 4 cards**. Four gives the usual 2 × 2 grid; with fewer, the
+  cards grow to fill the page, so you never have to pad a page out.
 - `category` sets the page colour. Use one of:
   `needs` `health` `comfort` `people` `activity` `feelings` `misc`.
 - Keep English labels short. Two words fit comfortably; three start to wrap.
 
-### Example: naming the "Call family" card
+### Example: adding a card
 
-In `cards.js`, find the `people` page and change:
-
-```js
-{ icon: "📞", en: "Call family", ta: "குடும்பத்தை கூப்பிடு", speak: "Please call my family" },
-```
-
-to something like:
+Find the page you want in `cards.js` and add a line to its `cards` list:
 
 ```js
 { icon: "📞", en: "Call Sangeeth", ta: "சங்கீத்தை கூப்பிடு", speak: "Please call Sangeeth" },
+```
+
+If that page already has 4 cards, either take one out or start a new page:
+
+```js
+{
+  category: "people",
+  cards: [
+    { icon: "📞", en: "Call Sangeeth", ta: "சங்கீத்தை கூப்பிடு", speak: "Please call Sangeeth" }
+  ]
+},
 ```
 
 ---
