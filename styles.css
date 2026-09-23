@@ -107,7 +107,7 @@ button {
   grid-template-columns: 1fr 1fr;
   grid-template-rows: 1fr 1fr;
   gap: 10px;
-  padding: 4px 10px 10px;
+  padding: 4px 10px 12px;
 }
 
 /* A page holds 1 to 6 cards and the grid adapts so there are never empty squares.
@@ -122,7 +122,7 @@ button {
 
 /* three rows leave less height, so the emoji gives way before the words do */
 .page[data-count="5"] .card-icon,
-.page[data-count="6"] .card-icon { font-size: clamp(40px, 7vh, 72px); }
+.page[data-count="6"] .card-icon { font-size: clamp(44px, 9vh, 96px); }
 .page[data-count="5"] .card,
 .page[data-count="6"] .card { gap: 2px; padding: 6px; border-radius: 16px; }
 
@@ -148,7 +148,7 @@ button {
 .card:active { transform: scale(.96); }
 
 .card-icon {
-  font-size: clamp(64px, 11vh, 120px);
+  font-size: clamp(64px, 16vh, 150px);
   line-height: 1;
 }
 
@@ -175,43 +175,6 @@ button {
 [data-category="activity"] { --bg-card: var(--activity-bg); --line: var(--activity-line); }
 [data-category="feelings"] { --bg-card: var(--feelings-bg); --line: var(--feelings-line); }
 [data-category="misc"]     { --bg-card: var(--misc-bg);     --line: var(--misc-line); }
-
-/* ---------- Yes / No bar ---------- */
-
-.yesno {
-  flex: 0 0 auto;
-  height: 18vh;
-  height: 18dvh;
-  min-height: 110px;
-  max-height: 150px;
-  display: flex;
-  gap: 10px;
-  padding: 0 10px 10px;
-}
-
-.yn {
-  flex: 1 1 0;
-  min-width: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-  border-radius: 20px;
-  border: 3px solid var(--line);
-  background: var(--bg-card);
-  transition: transform .12s ease, filter .12s ease;
-}
-
-.yn-yes { --bg-card: var(--yes-bg); --line: var(--yes-line); }
-.yn-no  { --bg-card: var(--no-bg);  --line: var(--no-line); }
-
-.yn:active,
-.yn.flash { transform: scale(.96); filter: brightness(1.12); }
-
-.yn-icon { font-size: clamp(34px, 9vw, 48px); line-height: 1; }
-.yn-text { display: flex; flex-direction: column; align-items: flex-start; line-height: 1.1; }
-.yn-en   { font-size: clamp(28px, 7.5vw, 40px); font-weight: 800; }
-.yn-ta   { font-size: clamp(18px, 4.6vw, 24px); font-weight: 500; color: var(--ink-soft); }
 
 /* ---------- enlarged card overlay ---------- */
 

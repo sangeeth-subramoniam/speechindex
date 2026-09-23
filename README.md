@@ -25,12 +25,10 @@ After this the phone can be in airplane mode and the app still works.
 
 ## How she uses it
 
-- **Swipe left / right** — move between the 6 pages of cards. It loops: swiping
-  back from the first page goes to the last, and forward from the last returns to the first.
+- **Swipe left / right** — move between the 4 pages of cards. It stops at both ends.
 - **Tap a card** — it fills the screen and the phone says the word.
   Tap the big card again to repeat it.
 - **Back** (the big button, or the phone's back button) — return to the cards.
-- **Yes / No** — always at the bottom of every page.
 
 ---
 

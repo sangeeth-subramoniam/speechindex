@@ -71,9 +71,6 @@ a caregiver can understand instantly.
 
 ### 6.2 Swipe between pages (P0)
 - Native horizontal scroll with `scroll-snap-type: x mandatory`, one page per snap. No JS swipe library.
-- **Wraps around**: a backwards swipe on the first page goes to the last, and a forwards swipe on
-  the last returns to the first. Decided on `touchend`, not mid-gesture, so the browser is not left
-  panning from the new position and overshooting.
 - Page indicator dots at the top, current page highlighted. Dots are large (≥ 16 px) but not tappable-critical.
 - Body/document must not scroll vertically or bounce; `overscroll-behavior: none`.
 
@@ -93,10 +90,10 @@ a caregiver can understand instantly.
   default English voice, rate ~0.9. No voice-pack setup, no Tamil speech, no audio files.
 - If `speechSynthesis` is unavailable, fail silently — the enlarged card is still shown.
 
-### 6.5 Yes / No bar (P0)
-- A fixed bottom bar with two huge buttons: **YES / ஆமாம்** (green) and **NO / இல்லை** (red).
-  Always visible on every page. Tapping speaks the word and flashes the button; no overlay.
-- Bar height ~ 18 % of viewport; each button ≥ 96 px tall.
+### 6.5 Yes / No bar — REMOVED 2026-09-23
+
+Dropped at Sangeeth's request along with 12 cards. The freed height goes to the cards, whose
+emoji grew from 70px to 102px at 360 x 640.
 
 ### 6.6 Offline / installable (P0)
 - `manifest.webmanifest`: `display: standalone`, `orientation: portrait`, `start_url: ./`,
@@ -117,26 +114,26 @@ a caregiver can understand instantly.
   travel < 10 px) so a swipe never accidentally opens a card.
 - Use the full safe area (`env(safe-area-inset-*)`).
 
-## 7. Content — card set (23 cards over 6 pages)
+## 7. Content — card set (13 cards over 4 pages)
 
-English primary, Tamil help text. Colour = category. **Tamil strings still need Sangeeth's review** —
-they are drafted for colloquial spoken Tamil.
+English primary, Tamil help text. Colour = category. **Tamil strings still need Sangeeth's review.**
 
-Revised 2026-09-22 on Sangeeth's instruction: removed Doctor, Call family, Come here, Leave me alone,
-Sad, Scared, Glasses, Wait and Thank you; added Exercise; split Tea / Coffee into two cards.
-That leaves 21 cards, which does not divide by 4, so a page now holds **1 to 4** cards and the grid
-adapts (see §6.1).
+Revised 2026-09-23: removed Sleep, Medicine, Hot, Cold, Bath, Exercise, Go outside, Charger,
+Happy and Tired, plus the fixed Yes / No bar. The reason is clinical, not cosmetic — Amma is six
+days post-surgery and newly discharged, and the app should stay as positive and as small as
+possible. Cards get added back as she improves.
+
+Sit up moved from Comfort to Needs, because Comfort would otherwise have been a page holding
+one card. Feelings became empty and the page was dropped.
 
 | Page | Category (colour) | Cards |
 |---|---|---|
-| 1 | Needs (blue) | 💧 Water · தண்ணீர் — 🍚 Food · சாப்பாடு — 🚽 Toilet · கழிவறை — 🛏️ Sleep · தூக்கம் |
-| 2 | Health (pink) | 🤕 Pain · வலி — 💊 Medicine · மருந்து — 🤚 Itching · அரிப்பு — 😵‍💫 Dizzy · தலைசுற்றல் — 😖 Headache · தலைவலி |
-| 3 | Comfort (orange) | 🥵 Hot · சூடு — 🥶 Cold · குளிர் — 🚿 Bath · குளியல் — 🪑 Sit up · எழுந்து உட்கார |
-| 4 | Activity (green) | 📺 TV · டிவி — 🎵 Music · பாட்டு — 🧘 Exercise · பயிற்சி — 🌳 Go outside · வெளியே |
-| 5 | Misc (teal) | 🍵 Tea · டீ — ☕ Coffee · காபி — 🔌 Charger · சார்ஜர் — 🛐 Prayer · பிரார்த்தனை |
-| 6 | Feelings (yellow) | 😊 Happy · சந்தோஷம் — 😴 Tired · சோர்வு |
+| 1 | Needs (blue) | 💧 Water · தண்ணீர் — 🍚 Food · சாப்பாடு — 🚽 Toilet · கழிவறை — 🪑 Sit up · எழுந்து உட்கார |
+| 2 | Health (pink) | 🤕 Pain · வலி — 🤚 Itching · அரிப்பு — 😵‍💫 Dizzy · தலைசுற்றல் — 😖 Headache · தலைவலி |
+| 3 | Misc (teal) | 🍵 Tea · டீ — ☕ Coffee · காபி — 🛐 Prayer · பிரார்த்தனை |
+| 4 | Activity (green) | 📺 TV · டிவி — 🎵 Music · பாட்டு |
 
-Fixed bar: ✅ Yes · ஆமாம் — ❌ No · இல்லை.
+No fixed bottom bar.
 
 ## 8. Data format — `cards.js`
 

@@ -13,8 +13,6 @@
   var bigEn     = document.getElementById("big-en");
   var bigTa     = document.getElementById("big-ta");
   var btnClose  = document.getElementById("btn-close");
-  var btnYes    = document.getElementById("btn-yes");
-  var btnNo     = document.getElementById("btn-no");
 
   /* ---------- speech ---------- */
 
@@ -134,45 +132,6 @@
     syncDots();
   }, { passive: true });
 
-  /* ---------- swiping past either end wraps around ---------- */
-
-  // Decided on touchend rather than mid-gesture: jumping while the finger is still
-  // down leaves the browser panning from the new position and overshooting a page.
-
-  var lastPage = data.pages.length - 1;
-  var wrapFromX = 0, wrapFromScroll = 0, wrapArmed = false;
-  var WRAP_MIN_DRAG = 50;
-
-  function goToPage(i) {
-    pagesEl.scrollLeft = i * pagesEl.clientWidth;
-    settlingUntil = Date.now() + 180;
-    syncDots();
-  }
-
-  function maxScroll() { return pagesEl.scrollWidth - pagesEl.clientWidth; }
-
-  pagesEl.addEventListener("touchstart", function (e) {
-    wrapArmed = e.touches.length === 1;
-    if (!wrapArmed) { return; }
-    wrapFromX = e.touches[0].clientX;
-    wrapFromScroll = pagesEl.scrollLeft;
-  }, { passive: true });
-
-  pagesEl.addEventListener("touchend", function (e) {
-    if (!wrapArmed) { return; }
-    wrapArmed = false;
-    var t = e.changedTouches && e.changedTouches[0];
-    if (!t) { return; }
-    var dx = t.clientX - wrapFromX;
-    var max = maxScroll();
-    // only wrap if the swipe both started and ended pinned against the same edge
-    if (wrapFromScroll <= 1 && pagesEl.scrollLeft <= 1 && dx > WRAP_MIN_DRAG) {
-      goToPage(lastPage);
-    } else if (wrapFromScroll >= max - 1 && pagesEl.scrollLeft >= max - 1 && dx < -WRAP_MIN_DRAG) {
-      goToPage(0);
-    }
-  }, { passive: true });
-
   /* ---------- tap a card (but never mistake a swipe for a tap) ---------- */
 
   var downX = 0, downY = 0, moved = false;
@@ -222,22 +181,6 @@
   bigCard.addEventListener("click", function () { buzz(); speak(openWord); });
   btnClose.addEventListener("click", function () { closeCard(false); });
   window.addEventListener("popstate", function () { closeCard(true); });
-
-  /* ---------- Yes / No ---------- */
-
-  function wireYesNo(btn, word) {
-    btn.addEventListener("click", function () {
-      buzz();
-      speak(word);
-      btn.classList.add("flash");
-      setTimeout(function () { btn.classList.remove("flash"); }, 220);
-    });
-  }
-
-  if (data.yesNo) {
-    wireYesNo(btnYes, (data.yesNo.yes && data.yesNo.yes.en) || "Yes");
-    wireYesNo(btnNo, (data.yesNo.no && data.yesNo.no.en) || "No");
-  }
 
   /* ---------- offline ---------- */
 
