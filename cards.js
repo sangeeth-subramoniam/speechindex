@@ -32,6 +32,7 @@ window.CARDS = {
     {
       category: "misc",
       cards: [
+        { icon: "🚿", en: "Bath",   ta: "குளியல்",       speak: "I want to take a bath" },
         { icon: "🍵", en: "Tea",    ta: "டீ",            speak: "I would like some tea" },
         { icon: "☕", en: "Coffee", ta: "காபி",          speak: "I would like some coffee" },
         { icon: "🛐", en: "Prayer", ta: "பிரார்த்தனை",   speak: "I want to pray" }

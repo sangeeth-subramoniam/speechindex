@@ -3,7 +3,7 @@
  * TO RELEASE A CHANGE: bump CACHE_VERSION below, commit, push.
  * The phone picks up the new version the next time it is opened while online.
  */
-var CACHE_VERSION = "speech-cards-v4";
+var CACHE_VERSION = "speech-cards-v5";
 
 var ASSETS = [
   "./",

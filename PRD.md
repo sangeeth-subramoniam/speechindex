@@ -114,7 +114,7 @@ emoji grew from 70px to 102px at 360 x 640.
   travel < 10 px) so a swipe never accidentally opens a card.
 - Use the full safe area (`env(safe-area-inset-*)`).
 
-## 7. Content — card set (13 cards over 4 pages)
+## 7. Content — card set (14 cards over 4 pages)
 
 English primary, Tamil help text. Colour = category. **Tamil strings still need Sangeeth's review.**
 
@@ -126,11 +126,15 @@ possible. Cards get added back as she improves.
 Sit up moved from Comfort to Needs, because Comfort would otherwise have been a page holding
 one card. Feelings became empty and the page was dropped.
 
+2026-09-24: Bath added back, on page 3 rather than page 1. Page 1 was already full, and a fifth
+card there would have forced the 2 x 3 grid and shrunk the emoji on the most-used page from
+102px to about 58px. Page 3 had room and keeps its 2 x 2 layout.
+
 | Page | Category (colour) | Cards |
 |---|---|---|
 | 1 | Needs (blue) | 💧 Water · தண்ணீர் — 🍚 Food · சாப்பாடு — 🚽 Toilet · கழிவறை — 🪑 Sit up · எழுந்து உட்கார |
 | 2 | Health (pink) | 🤕 Pain · வலி — 🤚 Itching · அரிப்பு — 😵‍💫 Dizzy · தலைசுற்றல் — 😖 Headache · தலைவலி |
-| 3 | Misc (teal) | 🍵 Tea · டீ — ☕ Coffee · காபி — 🛐 Prayer · பிரார்த்தனை |
+| 3 | Misc (teal) | 🚿 Bath · குளியல் — 🍵 Tea · டீ — ☕ Coffee · காபி — 🛐 Prayer · பிரார்த்தனை |
 | 4 | Activity (green) | 📺 TV · டிவி — 🎵 Music · பாட்டு |
 
 No fixed bottom bar.
