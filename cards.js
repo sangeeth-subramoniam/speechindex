@@ -9,7 +9,7 @@
  *          speak = optional; what the phone says out loud (defaults to `en`)
  * category must be one of: needs health comfort people activity feelings misc
  */
-window.CARDS = {
+(typeof self !== "undefined" ? self : window).CARDS = {
   pages: [
     {
       category: "needs",

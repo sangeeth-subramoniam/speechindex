@@ -3,9 +3,11 @@
  * TO RELEASE A CHANGE: bump CACHE_VERSION below, commit, push.
  * The phone picks up the new version the next time it is opened while online.
  */
-var CACHE_VERSION = "speech-cards-v5";
+var CACHE_VERSION = "speech-cards-v6";
 
-var ASSETS = [
+// These must all be present or the app itself is broken; a failure here fails
+// the whole install (the browser keeps the previous, working version instead).
+var CORE_ASSETS = [
   "./",
   "./index.html",
   "./styles.css",
@@ -17,17 +19,45 @@ var ASSETS = [
   "./icons/icon-512.png"
 ];
 
+// One Tamil pronunciation clip per card, worked out from cards.js itself so this
+// list can never fall out of sync with it. Unlike CORE_ASSETS, a missing clip
+// (for instance a brand new card whose audio has not been generated yet) must
+// NOT fail the whole install — that card just falls back to English speech
+// until its clip is added; see tools/generate-audio.js and README.md.
+importScripts("./cards.js");
+
+function slug(en) {
+  return String(en).toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
+}
+
+var AUDIO_ASSETS = [];
+(self.CARDS ? self.CARDS.pages : []).forEach(function (page) {
+  (page.cards || []).forEach(function (card) {
+    var url = "./audio/" + slug(card.en) + ".m4a";
+    if (AUDIO_ASSETS.indexOf(url) === -1) { AUDIO_ASSETS.push(url); }
+  });
+});
+
 self.addEventListener("install", function (event) {
   event.waitUntil(
     caches.open(CACHE_VERSION).then(function (cache) {
       // { cache: "reload" } is essential: it bypasses the browser's own HTTP cache.
       // Without it a new release re-caches the OLD files and the change never appears.
-      return Promise.all(ASSETS.map(function (url) {
+      var loadCore = Promise.all(CORE_ASSETS.map(function (url) {
         return fetch(new Request(url, { cache: "reload" })).then(function (res) {
           if (!res || !res.ok) { throw new Error("precache failed: " + url); }
           return cache.put(url, res);
         });
       }));
+      var loadAudio = Promise.all(AUDIO_ASSETS.map(function (url) {
+        return fetch(new Request(url, { cache: "reload" })).then(function (res) {
+          if (res && res.ok) { return cache.put(url, res); }
+          console.warn("Speech Cards: no audio for " + url + " yet — that card will speak English.");
+        }).catch(function () {
+          console.warn("Speech Cards: could not fetch " + url + " — that card will speak English.");
+        });
+      }));
+      return Promise.all([loadCore, loadAudio]);
     }).then(function () { return self.skipWaiting(); })
   );
 });

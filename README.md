@@ -2,7 +2,7 @@
 
 Simple communication cards for someone recovering speech after a stroke.
 Big cards, English with Tamil underneath, swipe between pages, tap a card to
-enlarge it and have the phone say it out loud.
+enlarge it and hear the Tamil word spoken aloud.
 
 **Live app:** https://sangeeth-subramoniam.github.io/speechindex/
 
@@ -26,7 +26,7 @@ After this the phone can be in airplane mode and the app still works.
 ## How she uses it
 
 - **Swipe left / right** — move between the 4 pages of cards. It stops at both ends.
-- **Tap a card** — it fills the screen and the phone says the word.
+- **Tap a card** — it fills the screen and speaks the Tamil word aloud.
   Tap the big card again to repeat it.
 - **Back** (the big button, or the phone's back button) — return to the cards.
 
@@ -75,6 +75,41 @@ If that page already has 6 cards, either take one out or start a new page:
   ]
 },
 ```
+
+Then generate its Tamil audio clip — see the next section. Until you do, that one
+card still works, it just speaks the English `speak` text instead of Tamil.
+
+---
+
+## The Tamil voice
+
+Tapping a card speaks its Tamil word using a short pre-recorded audio clip — not the
+phone's own text-to-speech. Most Android phones have no Tamil voice installed, so
+relying on one would leave the app silent on her phone specifically. A pre-recorded
+clip works everywhere, with no setup, exactly like the rest of the app.
+
+The clips are generated locally with **macOS's built-in Tamil voice ("Vani")** — free,
+offline, no account, no cost. Nothing is sent to any online service.
+
+**After adding or changing a card in `cards.js`, run:**
+
+```sh
+node tools/generate-audio.js
+```
+
+This reads `cards.js`, and for every card whose audio doesn't exist yet, creates
+`audio/<card-name>.m4a` by speaking its `ta` text. It skips cards that already have
+a clip — pass `--force` to regenerate everything. Then commit the new files in
+`audio/` along with your `cards.js` change and the usual `CACHE_VERSION` bump.
+
+**Requires a Mac.** If you're on a different computer: generate the clip any other
+way (any Tamil text-to-speech, even a phone app), save it as an `.m4a`, and place it
+at `audio/<card-name>.m4a` — the name is the English label, lowercased, with spaces
+and punctuation turned into dashes (`"Sit up"` → `sit-up.m4a`, `"TV"` → `tv.m4a`).
+
+**If a card's clip is missing:** the app still works — that one card falls back to
+speaking the English `speak` text (or `en` if there's no `speak`) instead of staying
+silent. It's not a broken release, just a card waiting for its clip.
 
 ---
 
@@ -151,6 +186,8 @@ The email is set per-repo, so it does not affect work repositories.
 | `sw.js`                | Makes it work offline. Bump the version to release.    |
 | `manifest.webmanifest` | Name and icon for the home screen                      |
 | `icons/`               | App icon                                               |
+| `audio/`               | One Tamil pronunciation clip per card                  |
+| `tools/generate-audio.js` | Generates those clips from `cards.js`               |
 | `PRD.md`               | What was built and why                                 |
 
 No frameworks, no build step, no dependencies. Plain HTML, CSS and JavaScript.
@@ -159,8 +196,12 @@ No frameworks, no build step, no dependencies. Plain HTML, CSS and JavaScript.
 
 ## Notes
 
-- Speech uses the phone's built-in English voice. It speaks English only.
-  If a phone has no voice available, the card still enlarges — only the sound is missing.
-- Tamil is shown as text, using the phone's own Tamil font. It is not spoken.
+- Speech is a pre-recorded Tamil clip per card (see "The Tamil voice" above), not the
+  phone's own text-to-speech — it needs no voice pack installed on her phone.
+- The voice is a synthesized one (macOS's Tamil TTS voice, "Vani"), not a recording of
+  a real person. If a more natural voice matters more than the simplicity of
+  generating clips locally, a family member could record each word instead — the
+  file format and naming would stay exactly the same.
+- If a card's audio clip is ever missing, it falls back to speaking the English text.
 - Designed for an Android phone in portrait. It works on iOS too, though
   "Add to Home screen" lives in the Share menu there.

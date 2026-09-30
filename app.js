@@ -56,6 +56,41 @@
     try { if (navigator.vibrate) { navigator.vibrate(30); } } catch (e) {}
   }
 
+  function slug(en) {
+    return String(en).toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
+  }
+
+  // Tamil pronunciation is a short pre-recorded clip per card (see audio/ and
+  // tools/generate-audio.js) rather than the phone's own text-to-speech: many
+  // Android phones have no Tamil voice installed, so relying on one would leave
+  // the app silent for her. If a card's clip is missing or fails to load, it
+  // falls back to the phone's English voice rather than staying silent.
+  var currentAudio = null;
+
+  function playCard(card) {
+    stopAudio();
+    var src = "./audio/" + slug(card.en) + ".m4a";
+    var audio = new Audio(src);
+    currentAudio = audio;
+    var usedFallback = false;
+    var fallback = function () {
+      if (usedFallback || currentAudio !== audio) { return; }
+      usedFallback = true;
+      speak(card.speak || card.en);
+    };
+    audio.addEventListener("error", fallback);
+    var p = audio.play();
+    if (p && p.catch) { p.catch(fallback); }
+  }
+
+  function stopAudio() {
+    if (currentAudio) {
+      try { currentAudio.pause(); } catch (e) {}
+      currentAudio = null;
+    }
+    stopSpeech();
+  }
+
   if ("speechSynthesis" in window) {
     loadVoices();
     window.speechSynthesis.addEventListener
@@ -155,10 +190,10 @@
   /* ---------- the enlarged card ---------- */
 
   var isOpen = false;
-  var openWord = "";
+  var openCardData = null;
 
   function openCard(card, category) {
-    openWord = card.speak || card.en;
+    openCardData = card;
     overlay.setAttribute("data-category", category);
     bigIcon.textContent = card.icon || "";
     bigEn.textContent = card.en || "";
@@ -167,18 +202,18 @@
     isOpen = true;
     try { history.pushState({ overlay: true }, ""); } catch (e) {}
     buzz();
-    speak(openWord);
+    playCard(card);
   }
 
   function closeCard(fromBackButton) {
     if (!isOpen) { return; }
     isOpen = false;
     overlay.hidden = true;
-    stopSpeech();
+    stopAudio();
     if (!fromBackButton) { try { history.back(); } catch (e) {} }
   }
 
-  bigCard.addEventListener("click", function () { buzz(); speak(openWord); });
+  bigCard.addEventListener("click", function () { buzz(); if (openCardData) { playCard(openCardData); } });
   btnClose.addEventListener("click", function () { closeCard(false); });
   window.addEventListener("popstate", function () { closeCard(true); });
 

@@ -41,6 +41,7 @@ a caregiver can understand instantly.
 - No card editing inside the app (edit the data file instead).
 - No iOS-specific work (Android phone is the target; it will still mostly work on iOS).
 - No Tamil speech / voice packs / audio files — speech is English via the phone's built-in voice.
+  **Superseded 2026-09-30** — see §6.4.
 - No arrow buttons, pain sub-pages, photo icons, or update banners. Keep v1 minimal; features
   get added later only if Amma actually needs them.
 
@@ -78,17 +79,49 @@ a caregiver can understand instantly.
 1. Short haptic pulse (`navigator.vibrate(30)` if available).
 2. Card animates (scale up ~200 ms, `prefers-reduced-motion` respected) into a full-screen overlay:
    emoji ≥ 40 vw, English label ≥ 48 px, Tamil label ≥ 32 px, same category colour.
-3. The phone **speaks** the English label via `speechSynthesis` (see 6.4).
+3. The phone speaks the card's **Tamil** word via a pre-recorded clip (see §6.4).
 4. The overlay stays open until dismissed — she may be showing it to someone. Dismiss by tapping
    a very large ✕ / "Back" button (≥ 96 px) at the bottom, or the Android back button
    (push a history state on open, pop on close).
 5. Tapping the enlarged card again repeats the speech.
 
-### 6.4 Speech (P0)
-- Use the Web Speech API (`speechSynthesis`). Cancel any in-progress utterance before speaking.
-- Always speak the **English** label (or the card's optional `speak` override) with the device's
-  default English voice, rate ~0.9. No voice-pack setup, no Tamil speech, no audio files.
-- If `speechSynthesis` is unavailable, fail silently — the enlarged card is still shown.
+### 6.4 Speech — REVISED 2026-09-30
+
+**Original decision (v1):** speak the English label via `speechSynthesis`, no Tamil, no
+audio files, no voice-pack setup — chosen deliberately for simplicity.
+
+**Reversed at Sangeeth's request**, once actually using the app made clear the English
+voice wasn't what was needed: tapping a card should speak the **Tamil** word. Two ways
+to get Tamil speech were weighed:
+
+| | On-device `ta-IN` `speechSynthesis` voice | Pre-recorded audio clip per card |
+|---|---|---|
+| Code complexity | ~5 lines | A build tool + a fallback path |
+| Depends on | A Tamil voice already installed on **her specific phone** | Nothing on her phone |
+| Conflicts with | The original "no voice packs" decision | Nothing |
+
+Went with **pre-recorded clips** — more work once, but the only option that doesn't
+put a burden back on her phone. Generated locally with **macOS's built-in Tamil voice
+("Vani")**: free, offline, no account, no per-card cost, good enough quality for a
+synthesized voice. Real human recordings remain an option later without changing the
+file format or any code — just replace the `.m4a` files.
+
+- `tools/generate-audio.js` reads `cards.js`, and for each card without an existing
+  clip, runs `say -v Vani -o tmp.aiff "<ta text>"` then `afconvert` to AAC/`.m4a`,
+  saved as `audio/<slug(en)>.m4a`. Skips existing files; `--force` regenerates all.
+- `app.js` plays `audio/<slug(en)>.m4a` on tap. On error (missing file, load failure),
+  falls back to the old `speechSynthesis` path speaking `card.speak || card.en` in
+  English — so a card is never silent, even mid-way through adding new content.
+- `sw.js` derives the list of audio files to precache directly from `cards.js`
+  (`importScripts("./cards.js")`), so it can never drift out of sync with the actual
+  card set. Unlike the core app files, a missing/failing audio precache is
+  **non-fatal** — logged as a console warning, the rest of the install proceeds. A
+  brand-new card added without running the generator yet still ships a working
+  (if English-speaking) app rather than breaking the release.
+- Verified: correct clip plays per card, repeat-tap replays it, switching cards stops
+  the previous clip, a genuinely missing file (tested by removing a real `.m4a` from
+  disk) still installs cleanly and falls back to English speech for that one card,
+  and sibling cards with real clips are unaffected.
 
 ### 6.5 Yes / No bar — REMOVED 2026-09-23
 
@@ -101,6 +134,9 @@ emoji grew from 70px to 102px at 360 x 640.
 - Service worker `sw.js`, **cache-first** for every app asset, precached on install with a
   versioned cache name (`speech-cards-v1` …). On `activate`, delete old caches.
 - All URLs **relative** (`./`), because the site lives at `/speechindex/`, not the domain root.
+- Precache is split into `CORE_ASSETS` (app shell — a failure here fails the whole
+  install, keeping the previous working version) and `AUDIO_ASSETS` (best-effort,
+  derived from `cards.js`; see §6.4).
 - Updates: new SW installs in the background when online and activates on the next launch
   (`skipWaiting` + `clients.claim`). Bumping `CACHE_VERSION` is the release mechanism.
 - Verify: load once online → airplane mode → kill app → reopen from home screen → fully functional.
